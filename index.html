@@ -1,529 +1,580 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <!-- crucial viewport for phones -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>💝 Be my Valentine? · penguin YES!</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>💝 Be my Valentine? · penguin YES!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    :root {
-      --penguin-face: white;
-      --penguin-picorna: orange;
-      --penguin-skin: gray;
-      --romance-pink: #ffb7c5;
-      --deep-love: #d43f7a;
-    }
+        :root {
+            --penguin-face: white;
+            --penguin-picorna: orange;
+            --penguin-skin: gray;
+            --romance-pink: #ffb7c5;
+            --deep-love: #d43f7a;
+        }
 
-    body {
-      background: linear-gradient(145deg, #ffe0e8, #fff0f7);
-      min-height: 100vh;
-      width: 100%;
-      overflow-x: hidden;
-      font-family: 'Segoe UI', 'Helvetica', system-ui, sans-serif;
-      position: relative;
-      touch-action: manipulation; /* improve touch response */
-    }
+        body {
+            background: linear-gradient(145deg, #ffe0e8, #fff0f7);
+            min-height: 100vh;
+            font-family: system-ui, 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+            touch-action: manipulation;
+            position: relative;
+        }
 
-    /* background hearts (constant) */
-    .hearts-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1;
-    }
+        .hearts-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
 
-    .bg-heart {
-      position: absolute;
-      font-size: 24px;
-      opacity: 0.3;
-      animation: bgFloat 12s linear infinite;
-      color: #ff99aa;
-    }
+        .bg-heart {
+            position: absolute;
+            font-size: clamp(16px, 5vw, 32px);
+            opacity: 0.35;
+            animation: bgFloat 14s linear infinite;
+            color: #ff99aa;
+        }
 
-    @keyframes bgFloat {
-      0% { transform: translateY(110vh) rotate(0deg); opacity: 0.2; }
-      70% { opacity: 0.5; }
-      100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
-    }
+        @keyframes bgFloat {
+            0%   { transform: translateY(110vh) rotate(0deg); opacity: 0.15; }
+            60%  { opacity: 0.5; }
+            100% { transform: translateY(-30vh) rotate(400deg); opacity: 0; }
+        }
 
-    /* Mountains & sun (scaled for mobile) */
-    .left-mountain {
-      width: min(300px, 40vw);
-      height: min(300px, 40vw);
-      background: linear-gradient(#cbf1e4, #50b7ff);
-      position: absolute;
-      transform: skew(0deg, 44deg);
-      z-index: 2;
-      margin-top: 100px;
-      left: 0;
-    }
-    .back-mountain {
-      width: min(300px, 40vw);
-      height: min(300px, 40vw);
-      background: linear-gradient(#cbf1e4, #2faaef);
-      position: absolute;
-      z-index: 1;
-      transform: rotate(45deg);
-      left: 110px;
-      top: 225px;
-    }
-    .sun {
-      width: min(200px, 30vw);
-      height: min(200px, 30vw);
-      background: #fff9b0;
-      position: absolute;
-      border-radius: 50%;
-      top: -75px;
-      right: -75px;
-      box-shadow: 0 0 60px #fffacd;
-      z-index: 0;
-    }
+        .scene {
+            position: relative;
+            min-height: 100vh;
+            padding: clamp(10px, 4vw, 30px) 2vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-    /* main Valentine card – fully responsive */
-    .valentine-card {
-      position: absolute;
-      top: 15px; /* less top gap on small screens */
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 40;
-      background: rgba(255, 240, 245, 0.95);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border-radius: 40px 40px 25px 25px;
-      padding: 12px 18px;
-      box-shadow: 0 20px 30px rgba(212, 63, 130, 0.3);
-      border: 3px solid white;
-      width: fit-content;
-      max-width: 92vw;
-      text-align: center;
-      transition: 0.3s;
-    }
+        .sun {
+            width: min(140px, 30vw);
+            aspect-ratio: 1;
+            background: #fff9b0;
+            border-radius: 50%;
+            position: absolute;
+            top: 2vw;
+            right: 2vw;
+            box-shadow: 0 0 50px #fffacd;
+            z-index: 0;
+        }
 
-    .question-text {
-      font-size: clamp(1.4rem, 6vw, 2.3rem);
-      font-weight: 800;
-      background: linear-gradient(145deg, #c92e6a, #a12f5a);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 6px;
-      white-space: nowrap;
-    }
+        .mountain {
+            position: absolute;
+            bottom: 0;
+            width: min(200px, 35vw);
+            height: min(200px, 35vw);
+            z-index: 2;
+        }
 
-    .from-signature {
-      font-size: 1.1rem;
-      color: #b34180;
-      margin-bottom: 10px;
-      font-style: italic;
-      font-weight: 500;
-    }
+        .left-mountain  { left: -8vw;  transform: skew(0deg, 42deg); background: linear-gradient(#cbf1e4, #50b7ff); }
+        .back-mountain { left: -2vw;   transform: rotate(42deg);      background: linear-gradient(#cbf1e4, #2faaef); z-index: 1; }
 
-    .button-pair {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
+        .valentine-card {
+            position: relative;
+            z-index: 40;
+            margin: 3vh auto 4vh;
+            background: rgba(255, 240, 245, 0.96);
+            backdrop-filter: blur(10px);
+            border-radius: 32px;
+            padding: clamp(16px, 5vw, 24px);
+            box-shadow: 0 16px 32px rgba(212, 63, 130, 0.28);
+            border: 3px solid white;
+            width: min(90vw, 480px);
+            text-align: center;
+        }
 
-    .love-btn {
-      font-size: clamp(1.5rem, 6vw, 2.5rem);
-      padding: 10px 22px;
-      border: none;
-      border-radius: 50px;
-      font-weight: bold;
-      box-shadow: 0 6px 0 rgba(150, 30, 80, 0.3);
-      transition: all 0.2s cubic-bezier(0.2, 1.2, 0.5, 1);
-      cursor: pointer;
-      touch-action: manipulation;
-      min-width: 120px;
-      background: white;
-      border: 3px solid;
-      -webkit-tap-highlight-color: transparent;
-    }
+        .question-text {
+            font-size: clamp(1.4rem, 6.5vw, 2.4rem);
+            font-weight: 800;
+            background: linear-gradient(145deg, #c92e6a, #a12f5a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.6em;
+            line-height: 1.2;
+        }
 
-    #btnYes {
-      background: #ffc0cb;
-      color: #a12f5a;
-      border-color: #ff4d7a;
-    }
-    #btnYes:active { transform: translateY(5px); box-shadow: 0 2px 0 #a12f5a; }
+        .from-signature {
+            font-size: clamp(0.95rem, 4vw, 1.2rem);
+            color: #b34180;
+            font-style: italic;
+            margin-bottom: 1.4em;
+        }
 
-    #btnNo {
-      background: #f0f0f0;
-      color: #666;
-      border-color: #bbb;
-      transition: all 0.3s ease;
-    }
-    #btnNo:active { transform: translateY(5px); box-shadow: 0 2px 0 #777; }
+        .button-pair {
+            display: flex;
+            gap: clamp(8px, 3vw, 16px);
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 100%;
+        }
 
-    #btnNo.turning-yes {
-      animation: turnToYes 0.5s forwards;
-    }
+        .love-btn {
+            font-size: clamp(1.2rem, 5vw, 1.8rem);
+            padding: 0.6em 1.3em;
+            border-radius: 50px;
+            font-weight: bold;
+            border: 3px solid;
+            box-shadow: 0 6px 0 rgba(150, 30, 80, 0.3);
+            transition: all 0.18s ease-out;
+            min-width: 100px;
+            flex: 1;
+            max-width: 200px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            cursor: pointer;
+        }
 
-    @keyframes turnToYes {
-      0% { transform: scale(1) rotate(0deg); }
-      50% { transform: scale(1.2) rotate(180deg); background: #ffe0e8; }
-      100% {
-        transform: scale(1) rotate(360deg);
-        background: #ffc0cb;
-        color: #a12f5a;
-        border-color: #ff4d7a;
-      }
-    }
+        #btnYes {
+            background: #ffc0cb;
+            color: #a12f5a;
+            border-color: #ff4d7a;
+        }
+        #btnYes:active { transform: translateY(4px); box-shadow: 0 2px 0 #a12f5a; }
 
-    /* ----- penguins (mobile-first scaling) ----- */
-    .penguin {
-      width: 260px;  /* slightly smaller base for phones */
-      height: 260px;
-      position: absolute;
-      z-index: 20;
-      transition: transform 0.2s;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .penguin * { position: absolute; }
+        #btnNo {
+            background: #f8f8f8;
+            color: #555;
+            border-color: #bbb;
+        }
+        #btnNo:active { transform: translateY(4px); box-shadow: 0 2px 0 #777; }
 
-    /* me (left) */
-    .penguin-1 {
-      left: 2%;
-      top: 210px;
-    }
-    /* YOU (right) */
-    .penguin-2 {
-      right: 2%;
-      top: 210px;
-      transform: scaleX(-1);
-    }
+        #btnNo.turning-yes {
+            animation: turnToYes 0.6s forwards;
+        }
 
-    /* penguin parts (unchanged but keep %) */
-    .penguin-head {
-      width: 50%; height: 45%; background: linear-gradient(45deg, gray, #efefe4);
-      border-radius: 70% 70% 65% 65%; top: 10%; left: 25%; z-index: 1;
-    }
-    .face { width: 60%; height: 70%; background: white; border-radius: 70% 70% 60% 60%; top: 15%; }
-    .face.left { left: 5%; } .face.right { right: 5%; }
-    .chin { width: 90%; height: 70%; background: white; top: 25%; left: 5%; border-radius: 70% 70% 100% 100%; }
-    .eye { width: 15%; height: 17%; background: black; top: 45%; border-radius: 50%; }
-    .eye.left { left: 25%; } .eye.right { right: 25%; }
-    .eye-lid { width: 150%; height: 100%; background: white; top: 25%; left: -23%; border-radius: 50%; }
-    .blush { width: 15%; height: 10%; background: pink; top: 65%; border-radius: 50%; }
-    .blush.left { left: 15%; } .blush.right { right: 15%; }
-    .beak { height: 10%; background: orange; border-radius: 50%; }
-    .beak.top { width: 20%; top: 60%; left: 40%; } .beak.bottom { width: 16%; top: 65%; left: 42%; }
+        @keyframes turnToYes {
+            to {
+                transform: scale(1) rotate(360deg);
+                background: #ffc0cb;
+                color: #a12f5a;
+                border-color: #ff4d7a;
+            }
+        }
 
-    .shirt { font: bold 20px Helvetica; top: 145px; left: 110px; z-index: 1; color: #5a5a5a; }
-    .shirt div { top: 22.5px; left: 12px; }
-    .penguin-body {
-      width: 53%; height: 45%; background: linear-gradient(45deg, #868585, #eae7e7, white);
-      border-radius: 80% 80% 100% 100%; top: 40%; left: 23.5%;
-    }
-    .penguin-body::before { content: ""; position: absolute; width: 50%; height: 45%; background: gray; top: 10%; left: 25%; border-radius: 0 0 100% 100%; opacity: 0.7; }
+        .penguins-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6vh;
+            margin-top: 4vh;
+            position: relative;
+            z-index: 20;
+            width: 100%;
+        }
 
-    .arm { width: 30%; height: 60%; background: linear-gradient(90deg, gray, #d1d2c7); border-radius: 30% 30% 30% 120%; z-index: -1; }
-    .penguin-1 .arm.left { top: 35%; left: 5%; transform-origin: top left; transform: rotate(130deg) scaleX(-1); animation: wave 3s infinite; }
-    .penguin-1 .arm.right { top: 0%; right: -5%; transform: rotate(-45deg); }
-    .penguin-2 .arm.left { top: 35%; left: 5%; transform-origin: top left; transform: rotate(130deg) scaleX(-1); }
-    .penguin-2 .arm.right { top: 15%; right: -5%; transform: rotate(-20deg); animation: offerFlowers 3s ease-in-out infinite; }
+        .penguin {
+            width: min(180px, 45vw);
+            height: min(180px, 45vw);
+            position: relative;
+            transition: transform 0.2s;
+            touch-action: manipulation;
+        }
 
-    @keyframes wave { 10% { transform: rotate(110deg) scaleX(-1); } 20% { transform: rotate(130deg) scaleX(-1); } 30% { transform: rotate(110deg) scaleX(-1); } 40% { transform: rotate(130deg) scaleX(-1); } }
-    @keyframes offerFlowers { 0%,100%{ transform: rotate(-20deg); } 50%{ transform: rotate(-30deg) translateY(-10px); } }
+        .penguin.flip { transform: scaleX(-1); }
 
-    .foot { width: 15%; height: 30%; background: orange; top: 85%; border-radius: 50%; z-index: -1; }
-    .foot.left { left: 25%; transform: rotate(80deg); } .foot.right { right: 25%; transform: rotate(-80deg); }
+        .penguin-head {
+            width: 52%;
+            height: 46%;
+            background: linear-gradient(45deg, gray, #efefe4);
+            border-radius: 70% 70% 65% 65%;
+            top: 8%;
+            left: 24%;
+            position: absolute;
+            z-index: 1;
+        }
 
-    /* bouquet */
-    .bouquet { position: absolute; top: 90px; right: -40px; z-index: 5; animation: bouquetSway 3s infinite; transform: scale(0.9); }
-    .flower { font-size: 30px; position: absolute; animation: flowerFloat 2s infinite; }
-    .flower.rose:nth-child(1) { top:0; left:0; } .flower.rose:nth-child(2) { top:8px; left:25px; animation-delay:0.3s; }
-    .flower.rose:nth-child(3) { top:18px; left:12px; animation-delay:0.6s; }
-    .flower.tulip:nth-child(4) { top:-8px; left:38px; animation-delay:0.9s; }
-    .flower.tulip:nth-child(5) { top:25px; left:35px; animation-delay:1.2s; }
-    @keyframes bouquetSway { 0%,100%{ transform: rotate(-5deg); } 50%{ transform: rotate(5deg) translateY(-10px); } }
-    @keyframes flowerFloat { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-5px) rotate(5deg); } }
+        .face        { width: 62%; height: 72%; background: white; border-radius: 70% 70% 60% 60%; top: 14%; position: absolute; }
+        .face.left   { left: 4%; }
+        .face.right  { right: 4%; }
 
-    /* speech bubbles - scaled */
-    .speech-bubble {
-      position: absolute;
-      background: white;
-      border-radius: 30px;
-      padding: 10px 18px;
-      font-size: 1.3rem;
-      font-weight: bold;
-      color: #b33b77;
-      box-shadow: 0 8px 14px #ffb6c1;
-      z-index: 30;
-      white-space: nowrap;
-    }
-    .speech-bubble::after {
-      content: ''; position: absolute; width: 0; height: 0;
-      border: 12px solid transparent;
-    }
-    .bubble-left { top: -70px; left: 50%; transform: translateX(-50%); }
-    .bubble-left::after { bottom: -20px; left: 50%; transform: translateX(-50%); border-top-color: white; }
-    .bubble-right { top: -70px; left: 50%; transform: translateX(-50%) scaleX(-1); }
-    .bubble-right::after { bottom: -20px; left: 50%; transform: translateX(-50%); border-top-color: white; }
+        .chin        { width: 92%; height: 72%; background: white; top: 24%; left: 4%; border-radius: 70% 70% 100% 100%; position: absolute; }
 
-    .ground {
-      width: 100vw; height: calc(100vh - 280px); background: linear-gradient(90deg, #d2e9ff, #f8fcff);
-      z-index: 0; position: absolute; bottom: 0;
-    }
+        .eye         { width: 16%; height: 18%; background: black; top: 42%; border-radius: 50%; position: absolute; }
+        .eye.left    { left: 24%; }
+        .eye.right   { right: 24%; }
 
-    /* calendar overlay - fully touch friendly */
-    .calendar-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.2);
-      backdrop-filter: blur(4px);
-      z-index: 100;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 12px;
-    }
-    .calendar-card {
-      background: #fff9fc;
-      border-radius: 50px;
-      padding: 20px 15px;
-      width: 100%;
-      max-width: 460px;
-      text-align: center;
-      border: 4px solid white;
-      box-shadow: 0 20px 40px #b34180;
-    }
-    .calendar-card h2 {
-      font-size: 2rem;
-      color: #ba2d6d;
-      margin-bottom: 12px;
-    }
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 6px;
-      margin: 20px 0;
-    }
-    .day {
-      background: #ffeef2;
-      padding: 12px 4px;
-      border-radius: 30px;
-      font-size: 1.3rem;
-      font-weight: bold;
-      color: #a13560;
-      box-shadow: 0 4px 0 #d48ca2;
-      cursor: pointer;
-      transition: 0.1s;
-      border: 2px solid white;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .day:active { transform: translateY(4px); box-shadow: none; }
-    .special-day {
-      background: #ffb3c6;
-      color: #a01a55;
-      border: 3px solid #ff629a;
-      position: relative;
-    }
-    .special-day::after {
-      content: "🍕";
-      font-size: 1.2rem;
-      position: absolute;
-      top: -16px;
-      right: -2px;
-      transform: rotate(20deg);
-    }
-    .calendar-note {
-      font-size: 1.3rem;
-      color: #cf3f78;
-      margin: 12px 0;
-    }
-    .close-calendar {
-      background: #ffacc7;
-      border: none;
-      padding: 12px 28px;
-      font-size: 1.6rem;
-      border-radius: 40px;
-      font-weight: bold;
-      color: #851e4a;
-      margin-top: 8px;
-      border: 3px solid white;
-      box-shadow: 0 5px 0 #b3416e;
-      cursor: pointer;
-    }
-    .close-calendar:active { transform: translateY(4px); box-shadow: none; }
+        .eye-lid     { width: 150%; height: 100%; background: white; top: 22%; left: -23%; border-radius: 50%; position: absolute; }
 
-    /* particle effects */
-    .particle-heart {
-      position: fixed; font-size: 2rem; pointer-events: none; z-index: 9999;
-      animation: floatAway 1.2s forwards;
-    }
-    @keyframes floatAway {
-      0% { opacity: 1; transform: translate(0,0) scale(1); }
-      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(2) rotate(360deg); }
-    }
+        .blush       { width: 16%; height: 11%; background: pink; top: 62%; border-radius: 50%; position: absolute; }
+        .blush.left  { left: 14%; }
+        .blush.right { right: 14%; }
 
-    /* RESPONSIVE FINE-TUNING for small phones */
-    @media (max-width: 600px) {
-      .penguin {
-        width: 200px;
-        height: 200px;
-      }
-      .penguin-1 { left: -15px; top: 240px; }
-      .penguin-2 { right: -15px; top: 240px; transform: scaleX(-1); }
-      .speech-bubble { font-size: 1rem; padding: 8px 14px; white-space: nowrap; }
-      .bubble-left { top: -55px; }
-      .bubble-right { top: -55px; }
-      .bouquet { transform: scale(0.75); right: -30px; top: 70px; }
-      .valentine-card { padding: 10px 14px; }
-      .love-btn { min-width: 100px; padding: 8px 14px; font-size: 1.5rem; }
-      .ground { height: calc(100vh - 220px); }
-    }
+        .beak.top    { width: 22%; height: 11%; background: orange; border-radius: 50%; top: 58%; left: 39%; position: absolute; }
+        .beak.bottom { width: 18%; height: 9%;  background: orange; border-radius: 50%; top: 64%; left: 41%; position: absolute; }
 
-    @media (max-width: 380px) {
-      .penguin-1 { left: -25px; }
-      .penguin-2 { right: -25px; }
-      .question-text { white-space: normal; font-size: 1.5rem; }
-      .button-pair { gap: 8px; }
-    }
+        .penguin-body {
+            width: 54%;
+            height: 46%;
+            background: linear-gradient(45deg, #868585, #eae7e7, white);
+            border-radius: 80% 80% 100% 100%;
+            top: 38%;
+            left: 23%;
+            position: absolute;
+        }
 
-    /* remove unwanted outlines on tap */
-    .love-btn:focus, .day:focus, .close-calendar:focus {
-      outline: none;
-    }
-  </style>
+        .penguin-body::before {
+            content: "";
+            position: absolute;
+            width: 52%;
+            height: 46%;
+            background: gray;
+            top: 8%;
+            left: 24%;
+            border-radius: 0 0 100% 100%;
+            opacity: 0.7;
+        }
+
+        .shirt {
+            position: absolute;
+            top: 56%;
+            left: 50%;
+            transform: translateX(-50%);
+            font: bold 14px Helvetica;
+            color: #5a5a5a;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .arm {
+            width: 32%;
+            height: 62%;
+            background: linear-gradient(90deg, gray, #d1d2c7);
+            border-radius: 30% 30% 30% 120%;
+            position: absolute;
+            z-index: -1;
+        }
+
+        .penguin:not(.flip) .arm.left  { top: 32%; left: 4%;  transform: rotate(128deg) scaleX(-1); animation: wave 3.2s infinite; transform-origin: top left; }
+        .penguin:not(.flip) .arm.right { top: 0%;   right: -4%; transform: rotate(-42deg); }
+
+        .penguin.flip .arm.left  { top: 32%; left: 4%;  transform: rotate(128deg) scaleX(-1); }
+        .penguin.flip .arm.right { top: 12%; right: -4%; transform: rotate(-22deg); animation: offerFlowers 3.4s ease-in-out infinite; }
+
+        @keyframes wave { 0%,100%,40% { transform: rotate(128deg) scaleX(-1); } 20%,60% { transform: rotate(108deg) scaleX(-1); } }
+        @keyframes offerFlowers { 0%,100% { transform: rotate(-22deg); } 50% { transform: rotate(-32deg) translateY(-8px); } }
+
+        .foot {
+            width: 16%;
+            height: 32%;
+            background: orange;
+            top: 84%;
+            border-radius: 50%;
+            position: absolute;
+            z-index: -1;
+        }
+        .foot.left  { left: 24%; transform: rotate(78deg); }
+        .foot.right { right: 24%; transform: rotate(-78deg); }
+
+        .bouquet {
+            position: absolute;
+            top: 34%;
+            right: -18%;
+            transform: scale(0.7);
+            animation: bouquetSway 3.5s infinite;
+            z-index: 5;
+        }
+
+        .flower {
+            font-size: clamp(18px, 4.5vw, 28px);
+            position: absolute;
+            animation: flowerFloat 2.4s infinite;
+        }
+
+        .flower.rose:nth-child(1)  { top:0;    left:0; }
+        .flower.rose:nth-child(2)  { top:6px;  left:20px; animation-delay:0.3s; }
+        .flower.rose:nth-child(3)  { top:14px; left:10px; animation-delay:0.6s; }
+        .flower.tulip:nth-child(4) { top:-6px; left:30px; animation-delay:0.9s; }
+        .flower.tulip:nth-child(5) { top:18px; left:28px; animation-delay:1.3s; }
+
+        @keyframes bouquetSway { 0%,100% { transform: rotate(-6deg) scale(0.7); } 50% { transform: rotate(6deg) translateY(-8px) scale(0.7); } }
+        @keyframes flowerFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px) rotate(6deg); } }
+
+        .speech-bubble {
+            position: absolute;
+            background: white;
+            border-radius: 18px;
+            padding: 6px 12px;
+            font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+            font-weight: bold;
+            color: #b33b77;
+            box-shadow: 0 6px 12px #ffb6c1;
+            white-space: normal;
+            z-index: 30;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 85vw;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 8px solid transparent;
+            border-top-color: white;
+        }
+
+        .bubble-right { transform: translateX(-50%) scaleX(-1); }
+        .bubble-right::after { transform: translateX(-50%) scaleX(-1); }
+
+        .calendar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.25);
+            backdrop-filter: blur(6px);
+            z-index: 100;
+            display: none;
+            place-items: center;
+            padding: 12px;
+        }
+
+        .calendar-card {
+            background: #fff9fc;
+            border-radius: 32px;
+            padding: clamp(14px, 4vw, 22px);
+            width: min(90vw, 450px);
+            border: 4px solid white;
+            box-shadow: 0 20px 44px #b34180;
+            text-align: center;
+        }
+
+        .calendar-card h2 {
+            font-size: clamp(1.3rem, 5vw, 1.8rem);
+            margin-bottom: 1em;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            margin: 1.2em 0;
+        }
+
+        .day {
+            background: #ffeef2;
+            padding: 8px 4px;
+            border-radius: 50%;
+            font-size: clamp(0.9rem, 3.5vw, 1.2rem);
+            font-weight: bold;
+            color: #a13560;
+            box-shadow: 0 4px 0 #d48ca2;
+            border: 2px solid white;
+            cursor: pointer;
+            transition: 0.12s;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .day:active { transform: translateY(3px); box-shadow: none; }
+
+        .special-day {
+            background: #ffb3c6;
+            color: #a01a55;
+            border: 3px solid #ff629a;
+            position: relative;
+        }
+
+        .special-day::after {
+            content: "🍕";
+            position: absolute;
+            top: -12px;
+            right: -8px;
+            font-size: 0.9rem;
+            transform: rotate(20deg);
+        }
+
+        .calendar-note {
+            font-size: clamp(0.95rem, 3.5vw, 1.1rem);
+            margin: 1.2em 0;
+            color: #b34180;
+        }
+
+        #closeCalendar {
+            background: #ffc0cb;
+            color: #a12f5a;
+            border: 3px solid #ff4d7a;
+            padding: 0.5em 1.2em;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: clamp(0.95rem, 3.5vw, 1.1rem);
+            transition: 0.18s;
+        }
+
+        #closeCalendar:active { transform: translateY(2px); }
+
+        button, .penguin, .day {
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+
+        @media (max-width: 768px) {
+            .sun { width: min(120px, 25vw); }
+            .mountain { width: min(160px, 30vw); height: min(160px, 30vw); }
+            .valentine-card { margin: 4vh auto; }
+        }
+
+        @media (max-width: 520px) {
+            .scene { padding: 12px 8px; }
+            .sun { top: 1vw; right: 1vw; width: min(100px, 22vw); }
+            .mountain { width: min(130px, 28vw); height: min(130px, 28vw); bottom: 0; }
+            .love-btn { min-width: 90px; padding: 0.5em 1em; flex: 0 1 45%; }
+            .button-pair { gap: 6px; }
+            .penguin { width: min(150px, 42vw); height: min(150px, 42vw); }
+            .speech-bubble { top: -40px; padding: 5px 10px; }
+            .bouquet { transform: scale(0.6); right: -20%; }
+            .calendar-grid { gap: 4px; }
+        }
+    </style>
 </head>
 <body>
-  <div class="hearts-bg" id="heartsBg"></div>
 
-  <!-- landscape scaled via vw -->
-  <div class="left-mountain"></div>
-  <div class="back-mountain"></div>
-  <div class="sun"></div>
+<div class="hearts-bg" id="heartsBg"></div>
 
-  <!-- main card -->
-  <div class="valentine-card" id="valentineCard">
-    <div class="question-text">💗 Be my Valentine? 💗</div>
-    <div class="from-signature">— from me🐧</div>
-    <div class="button-pair">
-      <button class="love-btn" id="btnYes">YES 💖</button>
-      <button class="love-btn" id="btnNo">no 💔</button>
-    </div>
-  </div>
+<div class="scene">
+    <div class="sun"></div>
+    <div class="mountain left-mountain"></div>
+    <div class="mountain back-mountain"></div>
 
-  <!-- LEFT PENGUIN (me) -->
-  <div class="penguin penguin-1" id="penguinMe">
-    <div class="penguin-head">
-      <div class="face left"></div><div class="face right"></div><div class="chin"></div>
-      <div class="eye left"><div class="eye-lid"></div></div><div class="eye right"><div class="eye-lid"></div></div>
-      <div class="blush left"></div><div class="blush right"></div><div class="beak top"></div><div class="beak bottom"></div>
+    <div class="valentine-card" id="valentineCard">
+        <div class="question-text">💗 Be my Valentine? 💗</div>
+        <div class="from-signature">— from me 🐧</div>
+        <div class="button-pair">
+            <button class="love-btn" id="btnYes">YES 💖</button>
+            <button class="love-btn" id="btnNo">no 💔</button>
+        </div>
     </div>
-    <div class="shirt"><div>💙</div><p>ME</p></div>
-    <div class="penguin-body">
-      <div class="arm left"></div><div class="arm right"></div><div class="foot left"></div><div class="foot right"></div>
-    </div>
-    <div class="speech-bubble bubble-left">Be my valentines? 🌹</div>
-  </div>
 
-  <!-- RIGHT PENGUIN (YOU) -->
-  <div class="penguin penguin-2" id="penguinYou">
-    <div class="penguin-head">
-      <div class="face left"></div><div class="face right"></div><div class="chin"></div>
-      <div class="eye left"><div class="eye-lid"></div></div><div class="eye right"><div class="eye-lid"></div></div>
-      <div class="blush left"></div><div class="blush right"></div><div class="beak top"></div><div class="beak bottom"></div>
-    </div>
-    <div class="shirt"><div>💗</div><p>UOY</p></div>
-    <div class="penguin-body">
-      <div class="arm left"></div><div class="arm right"></div><div class="foot left"></div><div class="foot right"></div>
-    </div>
-    <div class="bouquet">
-      <div class="flower rose">🌹</div><div class="flower rose">🌹</div><div class="flower rose">🌹</div>
-      <div class="flower tulip">🌷</div><div class="flower tulip">🌷</div>
-    </div>
-    <div class="speech-bubble bubble-right" id="yourBubble">...</div>
-  </div>
+    <div class="penguins-container">
+        <div class="penguin" id="penguinMe">
+            <div class="penguin-head">
+                <div class="face left"></div><div class="face right"></div><div class="chin"></div>
+                <div class="eye left"><div class="eye-lid"></div></div>
+                <div class="eye right"><div class="eye-lid"></div></div>
+                <div class="blush left"></div><div class="blush right"></div>
+                <div class="beak top"></div><div class="beak bottom"></div>
+            </div>
+            <div class="shirt">💙<br>ME</div>
+            <div class="penguin-body">
+                <div class="arm left"></div><div class="arm right"></div>
+                <div class="foot left"></div><div class="foot right"></div>
+            </div>
+            <div class="speech-bubble bubble-left">Be my valentines? 🌹</div>
+        </div>
 
-  <div class="ground"></div>
+        <div class="penguin flip" id="penguinYou">
+            <div class="penguin-head">
+                <div class="face left"></div><div class="face right"></div><div class="chin"></div>
+                <div class="eye left"><div class="eye-lid"></div></div>
+                <div class="eye right"><div class="eye-lid"></div></div>
+                <div class="blush left"></div><div class="blush right"></div>
+                <div class="beak top"></div><div class="beak bottom"></div>
+            </div>
+            <div class="shirt">💗<br>UOY</div>
+            <div class="penguin-body">
+                <div class="arm left"></div><div class="arm right"></div>
+                <div class="foot left"></div><div class="foot right"></div>
+            </div>
+            <div class="bouquet">
+                <div class="flower rose">🌹</div>
+                <div class="flower rose">🌹</div>
+                <div class="flower rose">🌹</div>
+                <div class="flower tulip">🌷</div>
+                <div class="flower tulip">🌷</div>
+            </div>
+            <div class="speech-bubble bubble-right" id="yourBubble">...</div>
+        </div>
+    </div>
+</div>
 
-  <!-- calendar overlay -->
-  <div class="calendar-overlay" id="calendarOverlay">
+<div class="calendar-overlay" id="calendarOverlay">
     <div class="calendar-card">
-      <h2>📅 pick our date!</h2>
-      <div class="calendar-grid" id="calendarDays"></div>
-      <div class="calendar-note" id="calendarNote">✨ any day leads to treats on the 28th ✨</div>
-      <button class="close-calendar" id="closeCalendar">close</button>
+        <h2>📅 pick our date!</h2>
+        <div class="calendar-grid" id="calendarDays"></div>
+        <div class="calendar-note" id="calendarNote">✨ any day leads to treats on the 28th ✨</div>
+        <button id="closeCalendar">close</button>
     </div>
-  </div>
+</div>
 
-  <script>
-    (function() {
-      // background hearts
-      function addBgHeart() {
+<script>
+(function() {
+    function addBgHeart() {
         const bg = document.getElementById('heartsBg');
         if (!bg) return;
         const h = document.createElement('div');
         h.className = 'bg-heart';
         const sym = ['❤️','💖','💕','💗','💝','🌸','🌺'];
-        h.textContent = sym[Math.floor(Math.random() * sym.length)];
-        h.style.left = Math.random() * 100 + '%';
-        h.style.animationDuration = (8 + Math.random() * 8) + 's';
-        h.style.fontSize = (18 + Math.random() * 30) + 'px';
+        h.textContent = sym[Math.floor(Math.random()*sym.length)];
+        h.style.left = Math.random()*100 + '%';
+        h.style.animationDuration = (9 + Math.random()*10) + 's';
+        h.style.fontSize = (16 + Math.random()*28) + 'px';
         bg.appendChild(h);
-        setTimeout(() => h.remove(), 15000);
-      }
-      setInterval(addBgHeart, 1000);
+        setTimeout(()=>h.remove(), 16000);
+    }
+    setInterval(addBgHeart, 1200);
 
-      function createHeartExplosion(x, y, count = 18) {
+    function createHeartExplosion(x, y, count = 18) {
         for (let i = 0; i < count; i++) {
-          const p = document.createElement('div');
-          p.className = 'particle-heart';
-          const hearts = ['❤️','💖','💕','💗','💘','💞','💓','💝'];
-          p.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-          p.style.left = (x + (Math.random() - 0.5) * 140) + 'px';
-          p.style.top = (y + (Math.random() - 0.5) * 140) + 'px';
-          const dx = (Math.random() - 0.5) * 360;
-          const dy = (Math.random() - 0.8) * 280 - 40;
-          p.style.setProperty('--dx', dx + 'px');
-          p.style.setProperty('--dy', dy + 'px');
-          document.body.appendChild(p);
-          setTimeout(() => p.remove(), 1200);
+            const p = document.createElement('div');
+            p.className = 'particle-heart';
+            const hearts = ['❤️','💖','💕','💗','💘','💞','💓','💝'];
+            p.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+            p.style.left = (x + (Math.random() - 0.5) * 140) + 'px';
+            p.style.top = (y + (Math.random() - 0.5) * 140) + 'px';
+            const dx = (Math.random() - 0.5) * 360;
+            const dy = (Math.random() - 0.8) * 280 - 40;
+            p.style.setProperty('--dx', dx + 'px');
+            p.style.setProperty('--dy', dy + 'px');
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 1200);
         }
-      }
+    }
 
-      const btnYes = document.getElementById('btnYes');
-      const btnNo = document.getElementById('btnNo');
-      const penguinYou = document.getElementById('penguinYou');
-      const penguinMe = document.getElementById('penguinMe');
-      const yourBubble = document.getElementById('yourBubble');
-      const calendarOverlay = document.getElementById('calendarOverlay');
-      const calendarGrid = document.getElementById('calendarDays');
-      const calendarNote = document.getElementById('calendarNote');
-      const closeCal = document.getElementById('closeCalendar');
-      const valentineCard = document.getElementById('valentineCard');
-      const questionEl = valentineCard.querySelector('.question-text');
-      const signatureEl = valentineCard.querySelector('.from-signature');
+    const btnYes = document.getElementById('btnYes');
+    const btnNo = document.getElementById('btnNo');
+    const penguinYou = document.getElementById('penguinYou');
+    const penguinMe = document.getElementById('penguinMe');
+    const yourBubble = document.getElementById('yourBubble');
+    const calendarOverlay = document.getElementById('calendarOverlay');
+    const calendarGrid = document.getElementById('calendarDays');
+    const calendarNote = document.getElementById('calendarNote');
+    const closeCal = document.getElementById('closeCalendar');
+    const valentineCard = document.getElementById('valentineCard');
+    const questionEl = valentineCard.querySelector('.question-text');
+    const signatureEl = valentineCard.querySelector('.from-signature');
 
-      // no button turns into YES!
-      btnNo.addEventListener('click', function(e) {
+    btnNo.addEventListener('click', function(e) {
         e.stopPropagation();
         const rect = btnNo.getBoundingClientRect();
         createHeartExplosion(rect.left + rect.width/2, rect.top + rect.height/2, 15);
         btnNo.classList.add('turning-yes');
         setTimeout(() => {
-          btnNo.textContent = 'YES! 💖';
-          btnNo.style.background = '#ffc0cb';
-          btnNo.style.color = '#a12f5a';
-          btnNo.style.borderColor = '#ff4d7a';
-          setTimeout(() => handleYes('no-button'), 200);
+            btnNo.textContent = 'YES! 💖';
+            btnNo.style.background = '#ffc0cb';
+            btnNo.style.color = '#a12f5a';
+            btnNo.style.borderColor = '#ff4d7a';
+            setTimeout(() => handleYes('no-button'), 200);
         }, 500);
-      });
+    });
 
-      function handleYes(origin) {
+    function handleYes(origin) {
         const rect = btnYes.getBoundingClientRect();
         createHeartExplosion(rect.left + rect.width/2, rect.top + rect.height/2, 30);
 
@@ -534,10 +585,10 @@
         btnYes.disabled = true;
 
         if (btnNo.textContent !== 'YES! 💖') {
-          btnNo.style.opacity = '0';
-          setTimeout(() => btnNo.remove(), 400);
+            btnNo.style.opacity = '0';
+            setTimeout(() => btnNo.remove(), 400);
         } else {
-          btnNo.disabled = true;
+            btnNo.disabled = true;
         }
 
         yourBubble.textContent = 'YES!! 💕';
@@ -545,104 +596,98 @@
         yourBubble.style.color = '#a12f5a';
 
         setTimeout(() => {
-          calendarOverlay.style.display = 'flex';
-          askEmailConfirmation();
+            calendarOverlay.style.display = 'flex';
+            askEmailConfirmation();
         }, 600);
 
-        // heart rain
         for (let i=0; i<20; i++) {
-          setTimeout(() => {
-            const rain = document.createElement('div');
-            rain.style.position = 'fixed';
-            rain.style.left = Math.random() * 100 + '%';
-            rain.style.top = '-30px';
-            rain.style.fontSize = (20+Math.random()*30)+'px';
-            rain.style.pointerEvents = 'none';
-            rain.style.zIndex = 9998;
-            rain.textContent = ['❤️','💖','💕','💗','💘','💝'][Math.floor(Math.random()*6)];
-            rain.style.animation = `floatDown ${2+Math.random()*2}s linear forwards`;
-            document.body.appendChild(rain);
-            setTimeout(() => rain.remove(), 3000);
-          }, i*60);
+            setTimeout(() => {
+                const rain = document.createElement('div');
+                rain.style.position = 'fixed';
+                rain.style.left = Math.random() * 100 + '%';
+                rain.style.top = '-30px';
+                rain.style.fontSize = (20+Math.random()*30)+'px';
+                rain.style.pointerEvents = 'none';
+                rain.style.zIndex = 9998;
+                rain.textContent = ['❤️','💖','💕','💗','💘','💝'][Math.floor(Math.random()*6)];
+                rain.style.animation = `floatDown ${2+Math.random()*2}s linear forwards`;
+                document.body.appendChild(rain);
+                setTimeout(() => rain.remove(), 3000);
+            }, i*60);
         }
-      }
+    }
 
-      function askEmailConfirmation() {
+    function askEmailConfirmation() {
         const hint = document.createElement('div');
         hint.style.position = 'fixed';
         hint.style.bottom = '15px';
         hint.style.left = '50%';
         hint.style.transform = 'translateX(-50%)';
         hint.style.background = '#ffffff';
-        hint.style.padding = '14px 20px';
+        hint.style.padding = '12px 16px';
         hint.style.borderRadius = '40px';
-        hint.style.fontSize = '1.2rem';
+        hint.style.fontSize = 'clamp(0.95rem, 3.5vw, 1.1rem)';
         hint.style.boxShadow = '0 10px 20px #c2527c';
         hint.style.border = '3px solid #ff99bb';
-        hint.style.zIndex = 200;
-        hint.style.whiteSpace = 'nowrap';
-        hint.style.maxWidth = '90vw';
+        hint.style.zIndex = '200';
+        hint.style.whiteSpace = 'normal';
+        hint.style.maxWidth = '85vw';
         hint.style.textAlign = 'center';
-        hint.innerHTML = '📧Date confirmationed 💌';
+        hint.innerHTML = '📧 Date confirmed 💌';
         document.body.appendChild(hint);
         setTimeout(() => hint.remove(), 3500);
-      }
+    }
 
-      btnYes.addEventListener('click', (e) => { e.stopPropagation(); handleYes('button'); });
-      penguinYou.addEventListener('click', (e) => {
+    btnYes.addEventListener('click', (e) => { e.stopPropagation(); handleYes('button'); });
+    penguinYou.addEventListener('click', (e) => {
         e.stopPropagation();
         const rect = penguinYou.getBoundingClientRect();
         createHeartExplosion(rect.left + rect.width/2, rect.top + rect.height/2, 20);
         handleYes('penguin');
-      });
-      penguinMe.addEventListener('click', (e) => {
+    });
+    penguinMe.addEventListener('click', (e) => {
         const rect = penguinMe.getBoundingClientRect();
         createHeartExplosion(rect.left + rect.width/2, rect.top + rect.height/2, 10);
-      });
+    });
 
-      // calendar build
-      function buildCalendar() {
+    function buildCalendar() {
         calendarGrid.innerHTML = '';
         for (let d = 1; d <= 28; d++) {
-          const dayDiv = document.createElement('div');
-          dayDiv.className = 'day';
-          if (d === 28) dayDiv.classList.add('special-day');
-          dayDiv.textContent = d;
-          dayDiv.setAttribute('data-day', d);
-          dayDiv.addEventListener('click', function() {
-            const chosen = this.getAttribute('data-day');
-            if (chosen == 28) {
-              calendarNote.innerHTML = '🍕 28th — pizza & ice cream date! 🍦';
-            } else {
-              calendarNote.innerHTML = `✨ you picked day ${chosen} → we'll still go on the 28th for food treats! ✨`;
-            }
-            const rect = this.getBoundingClientRect();
-            createHeartExplosion(rect.left + rect.width/2, rect.top + rect.height/2, 6);
-          });
-          calendarGrid.appendChild(dayDiv);
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'day';
+            if (d === 28) dayDiv.classList.add('special-day');
+            dayDiv.textContent = d;
+            dayDiv.setAttribute('data-day', d);
+            dayDiv.addEventListener('click', function() {
+                const chosen = this.getAttribute('data-day');
+                if (chosen == 28) {
+                    calendarNote.innerHTML = '🍕 28th — pizza & ice cream date! 🍦';
+                } else {
+                    calendarNote.innerHTML = `✨ you picked day ${chosen} → we'll still go on the 28th for food treats! ✨`;
+                }
+                const rect = this.getBoundingClientRect();
+                createHeartExplosion(rect.left + rect.width/2, rect.top + rect.height/2, 6);
+            });
+            calendarGrid.appendChild(dayDiv);
         }
-      }
-      buildCalendar();
+    }
+    buildCalendar();
 
-      closeCal.addEventListener('click', function() {
+    closeCal.addEventListener('click', function() {
         calendarOverlay.style.display = 'none';
-      });
+    });
 
-      // floatDown keyframe
-      if (!document.querySelector('#floatDownStyle')) {
+    if (!document.querySelector('#floatDownStyle')) {
         const style = document.createElement('style');
         style.id = 'floatDownStyle';
         style.innerHTML = '@keyframes floatDown { 0% { top: -30px; opacity: 0.9; } 100% { top: 110vh; opacity: 0; transform: rotate(360deg); } }';
         document.head.appendChild(style);
-      }
+    }
 
-      // ensure touches don't cause zoom
-      document.addEventListener('touchstart', (e) => {
-        if (e.target.closest('.love-btn') || e.target.closest('.penguin') || e.target.closest('.day') || e.target.closest('.close-calendar')) {
-          e.preventDefault();  // prevent double-tap zoom on these interactive elements
-        }
-      }, { passive: false });
-    })();
-  </script>
+    document.addEventListener('touchstart', e => {
+        if (e.touches.length > 1) e.preventDefault();
+    }, { passive: false });
+})();
+</script>
 </body>
 </html>
